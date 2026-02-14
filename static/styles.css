@@ -73,6 +73,12 @@ body {
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.button.button-secondary {
+  background: #f0e7dd;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+
 .button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -81,6 +87,10 @@ body {
 .button:not(:disabled):hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 16px rgba(15, 107, 95, 0.25);
+}
+
+.button.button-secondary:not(:disabled):hover {
+  box-shadow: 0 8px 16px rgba(31, 31, 31, 0.12);
 }
 
 .spinner {
@@ -125,6 +135,19 @@ body {
 
 .output {
   margin-top: 24px;
+}
+
+.actions {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.copy-status {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .output h2 {

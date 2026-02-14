@@ -32,6 +32,11 @@
         <h2>Rewritten text</h2>
         <pre id="outputText" class="output-text"></pre>
       </div>
+
+      <div class="actions">
+        <button id="copyBtn" class="button button-secondary" type="button" disabled>Copy rewritten text</button>
+        <span id="copyStatus" class="copy-status" aria-live="polite"></span>
+      </div>
     </section>
   </main>
 
@@ -41,6 +46,9 @@
     const outputText = document.getElementById("outputText");
     const spinner = document.getElementById("spinner");
     const errorBox = document.getElementById("error");
+    const copyBtn = document.getElementById("copyBtn");
+    const copyStatus = document.getElementById("copyStatus");
+    let copyStatusTimer = null;
 
     function setLoading(isLoading) {
       spinner.hidden = !isLoading;
@@ -52,9 +60,28 @@
       errorBox.hidden = !message;
     }
 
+    function setCopyStatus(message) {
+      if (copyStatusTimer) {
+        clearTimeout(copyStatusTimer);
+      }
+      copyStatus.textContent = message;
+      if (message) {
+        copyStatusTimer = setTimeout(() => {
+          copyStatus.textContent = "";
+        }, 2000);
+      }
+    }
+
+    function updateCopyState() {
+      const hasOutput = outputText.textContent.trim().length > 0;
+      copyBtn.disabled = !hasOutput;
+    }
+
     async function optimizeText() {
       showError("");
       outputText.textContent = "";
+      setCopyStatus("");
+      updateCopyState();
       const text = inputText.value.trim();
       if (!text) {
         showError("Please enter some text.");
@@ -75,6 +102,7 @@
         }
 
         outputText.textContent = data.result;
+        updateCopyState();
       } catch (err) {
         showError(err.message || "Unable to optimize text.");
       } finally {
@@ -82,7 +110,39 @@
       }
     }
 
+    async function copyRewrittenText() {
+      const text = outputText.textContent.trim();
+      if (!text) {
+        setCopyStatus("Nothing to copy.");
+        return;
+      }
+
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const tempArea = document.createElement("textarea");
+          tempArea.value = text;
+          tempArea.setAttribute("readonly", "");
+          tempArea.style.position = "absolute";
+          tempArea.style.left = "-9999px";
+          document.body.appendChild(tempArea);
+          tempArea.select();
+          const copied = document.execCommand("copy");
+          document.body.removeChild(tempArea);
+          if (!copied) {
+            throw new Error("Copy failed");
+          }
+        }
+        setCopyStatus("Copied.");
+      } catch (err) {
+        setCopyStatus("Copy failed. Please try again.");
+      }
+    }
+
     optimizeBtn.addEventListener("click", optimizeText);
+    copyBtn.addEventListener("click", copyRewrittenText);
+    updateCopyState();
   </script>
 </body>
 </html>
