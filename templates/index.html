@@ -9,6 +9,9 @@
 <body>
   <main class="page">
     <section class="card">
+      <div class="top-bar">
+        <button id="refreshBtn" class="button button-secondary" type="button">Refresh page</button>
+      </div>
       <header class="header">
         <h1>Text Optimizer</h1>
         <p>Paste text and get a cleaner, more human rewrite.</p>
@@ -17,13 +20,15 @@
       <label class="label" for="inputText">Your text</label>
       <textarea id="inputText" class="textarea" rows="10" placeholder="Paste or type your text..."></textarea>
 
-      <button id="optimizeBtn" class="button">Optimize Text</button>
+      <div class="optimize-row">
+        <button id="optimizeBtn" class="button">Convert Text</button>
 
-      <div id="spinner" class="spinner" aria-live="polite" aria-busy="true" hidden>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <span>Optimizing...</span>
+        <div id="spinner" class="spinner" aria-live="polite" aria-busy="true" hidden>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <span>Converting...</span>
+        </div>
       </div>
 
       <div id="error" class="error" hidden></div>
@@ -48,6 +53,7 @@
     const errorBox = document.getElementById("error");
     const copyBtn = document.getElementById("copyBtn");
     const copyStatus = document.getElementById("copyStatus");
+    const refreshBtn = document.getElementById("refreshBtn");
     let copyStatusTimer = null;
 
     function setLoading(isLoading) {
@@ -142,6 +148,9 @@
 
     optimizeBtn.addEventListener("click", optimizeText);
     copyBtn.addEventListener("click", copyRewrittenText);
+    refreshBtn.addEventListener("click", () => {
+      window.location.reload();
+    });
     updateCopyState();
   </script>
 </body>
