@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Text Optimizer</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <main class="page">
+    <section class="card">
+      <header class="header">
+        <h1>Text Optimizer</h1>
+        <p>Paste text and get a cleaner, more human rewrite.</p>
+      </header>
+
+      <label class="label" for="inputText">Your text</label>
+      <textarea id="inputText" class="textarea" rows="10" placeholder="Paste or type your text..."></textarea>
+
+      <button id="optimizeBtn" class="button">Optimize Text</button>
+
+      <div id="spinner" class="spinner" aria-live="polite" aria-busy="true" hidden>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <span>Optimizing...</span>
+      </div>
+
+      <div id="error" class="error" hidden></div>
+
+      <div class="output">
+        <h2>Rewritten text</h2>
+        <pre id="outputText" class="output-text"></pre>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const optimizeBtn = document.getElementById("optimizeBtn");
+    const inputText = document.getElementById("inputText");
+    const outputText = document.getElementById("outputText");
+    const spinner = document.getElementById("spinner");
+    const errorBox = document.getElementById("error");
+
+    function setLoading(isLoading) {
+      spinner.hidden = !isLoading;
+      optimizeBtn.disabled = isLoading;
+    }
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.hidden = !message;
+    }
+
+    async function optimizeText() {
+      showError("");
+      outputText.textContent = "";
+      const text = inputText.value.trim();
+      if (!text) {
+        showError("Please enter some text.");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetch("/optimize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Something went wrong.");
+        }
+
+        outputText.textContent = data.result;
+      } catch (err) {
+        showError(err.message || "Unable to optimize text.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    optimizeBtn.addEventListener("click", optimizeText);
+  </script>
+</body>
+</html>
