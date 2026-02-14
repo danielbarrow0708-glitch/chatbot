@@ -37,7 +37,7 @@ def build_messages(input_text: str) -> list[Dict[str, str]]:
         "Rewrite the provided text to improve clarity, readability, and natural flow.\n\n"
         "Guidelines:\n"
         "- Write in a natural, spoken tone without being overly casual\n"
-        "- Use many common abbreviations (aim for 9+ per paragraph)\n"
+        "- Use many common abbreviations (aim for 7+ per paragraph)\n"
         "- Preferred abbreviations: u, ur, btw, imo, idk, tbh, w/, b/c, asap, tho\n"
         "- Include a missing end punctuation in at least one sentence\n"
         "- Avoid corporate buzzwords and generic marketing phrases\n"
