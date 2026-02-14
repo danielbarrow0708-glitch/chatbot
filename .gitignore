@@ -1,0 +1,6 @@
+*.py[cod]
+*.so
+.venv/
+venv/
+ENV/
+.env
