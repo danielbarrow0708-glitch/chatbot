@@ -10,11 +10,9 @@ from dotenv import load_dotenv
 API_KEY_ENV = "DEEPSEEK_API_KEY"
 API_BASE_ENV = "DEEPSEEK_API_BASE"
 MODEL_ENV = "DEEPSEEK_MODEL"
-MAX_INPUT_CHARS_ENV = "MAX_INPUT_CHARS"
 
 DEFAULT_API_BASE = "https://api.deepseek.com/v1"
 DEFAULT_MODEL = "deepseek-chat"
-DEFAULT_MAX_INPUT_CHARS = 5000
 
 logging.basicConfig(
     level=logging.INFO,
@@ -66,17 +64,6 @@ def build_messages(input_text: str) -> list[Dict[str, str]]:
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
     ]
-
-
-def get_max_input_chars() -> int:
-    raw_value = (os.getenv(MAX_INPUT_CHARS_ENV) or "").strip()
-    if not raw_value:
-        return DEFAULT_MAX_INPUT_CHARS
-    try:
-        value = int(raw_value)
-    except ValueError:
-        return DEFAULT_MAX_INPUT_CHARS
-    return max(1, value)
 
 
 def call_llm_api(input_text: str) -> str:
@@ -131,9 +118,6 @@ def optimize() -> Any:
 
     if not text:
         return jsonify({"error": "Please enter some text."}), 400
-
-    if len(text) > get_max_input_chars():
-        return jsonify({"error": "Text is too long."}), 413
 
     try:
         optimized_text = call_llm_api(text)

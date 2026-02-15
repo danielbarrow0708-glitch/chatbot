@@ -30,12 +30,6 @@ class OptimizeEndpointTests(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("error", response.get_json())
 
-    def test_oversize_text_returns_413(self):
-        with patch.dict(os.environ, {"MAX_INPUT_CHARS": "5", "DEEPSEEK_API_KEY": "test"}):
-            response = self.client.post("/optimize", json={"text": "too long"})
-        self.assertEqual(response.status_code, 413)
-        self.assertIn("error", response.get_json())
-
     def test_request_exception_returns_502(self):
         with patch.dict(os.environ, {"DEEPSEEK_API_KEY": "test"}):
             with patch("app.requests.post", side_effect=requests.RequestException("boom")):
