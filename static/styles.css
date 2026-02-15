@@ -114,6 +114,10 @@ body {
   color: var(--muted);
 }
 
+.spinner[hidden] {
+  display: none;
+}
+
 .spinner .dot {
   width: 8px;
   height: 8px;

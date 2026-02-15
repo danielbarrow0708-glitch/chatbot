@@ -9,9 +9,6 @@
 <body>
   <main class="page">
     <section class="card">
-      <div class="top-bar">
-        <button id="refreshBtn" class="button button-secondary" type="button">Refresh page</button>
-      </div>
       <header class="header">
         <h1>Text Optimizer</h1>
         <p>Paste text and get a cleaner, more human rewrite.</p>
@@ -29,6 +26,7 @@
           <div class="dot"></div>
           <span>Converting...</span>
         </div>
+        <button id="refreshBtn" class="button"  type="button">Refresh page</button>
       </div>
 
       <div id="error" class="error" hidden></div>
@@ -88,13 +86,14 @@
       outputText.textContent = "";
       setCopyStatus("");
       updateCopyState();
+      setLoading(true);
+      await new Promise((resolve) => requestAnimationFrame(resolve));
       const text = inputText.value.trim();
       if (!text) {
         showError("Please enter some text.");
+        setLoading(false);
         return;
       }
-
-      setLoading(true);
       try {
         const response = await fetch("/optimize", {
           method: "POST",
